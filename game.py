@@ -29,6 +29,7 @@ class Game:
         self.__assign_empty()
 
     def __map_solution(self) -> None:
+        """Map each character in the solution to the correct coordinate."""
         self.solution_map = dict()
         for row_idx, row in enumerate(self.solution):
             for col_idx, cell in enumerate(row):
@@ -39,20 +40,28 @@ class Game:
         return
 
     def __check_size(self):
+        """Raises an exception if the game state is not rectangular."""
         for i in self.state:
             if len(i) != self.width:
                 raise Exception("Width must be greater than 0!")
 
     def __assign_empty(self) -> None:
+        """Finds the empty tile and records its coordinate."""
         for i in range(self.height):
             for j in range(self.width):
                 if self.state[i][j] == self.empty:
                     self.empty_coord = (i, j)
 
     def __str__(self) -> str:
+        """Converts the puzzle state into a string for easy printing."""
         return "\n".join([" ".join([i for i in row]) for row in self.state])
 
     def move(self, direction: Move) -> Union["Game", None]:
+        """Performs a move on a copy of the puzzle state, and returns that new state.
+
+        Keyword arguments:
+        direction -- the direction to move the empty tile. Enumerated to up, down, left, right
+        """
         result = tuple(sum(x) for x in zip(direction.value, self.empty_coord))  # type: ignore
         if not self.is_valid(result):
             return
@@ -71,6 +80,11 @@ class Game:
         return Game(ret_state, self.empty)
 
     def is_valid(self, coord: Tuple[int, ...]) -> bool:
+        """Returns true if the input is a valid coordinate in the game board.
+
+        Keyword arguments:
+        coord -- the coordinate that is being checked
+        """
         if (
             coord[0] < 0
             or coord[1] < 0
@@ -82,9 +96,15 @@ class Game:
         return True
 
     def is_complete(self) -> bool:
+        """Returns true if the puzzle has been solved."""
         return self.state == self.solution
 
     def manhattan_heuristic(self) -> int:
+        """Returns the value given by the Manhattan distance of each character to
+        its location in the solution.
+
+        In the Angelica puzzle, there is exactly one instance of duplicates. As a result, we take the Manhattan distance such that the duplicate A's go to the closest solution coordinate.
+        """
         # TODO: Implement heuristic
         ret = 0
         a_coords = []
@@ -110,6 +130,8 @@ class Game:
         return ret
 
     def misplaced_tile_heuristic(self) -> int:
+        """Returns the number of characters that are not at the same coordinate as their solution counterpart."""
+
         ret = 0
 
         for sol_row, state_row in zip(self.solution, self.state):
