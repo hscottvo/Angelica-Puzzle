@@ -83,7 +83,6 @@ class Game:
 
     def is_complete(self) -> bool:
         return self.state == self.solution
-        # return self.state == [["A", "N", "G"], ["E", "L", "I"], ["C", "A", self.empty]]
 
     def manhattan_heuristic(self) -> int:
         # TODO: Implement heuristic
