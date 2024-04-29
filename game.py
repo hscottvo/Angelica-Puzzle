@@ -17,8 +17,14 @@ class Game:
         self,
         state: List[List[str]] = default_state,
         empty: str = "\u25a1",
+        heuristic: str = "uniform_cost",
         num_moves: int = 0,
     ):
+        heuristics = {
+            "uniform_cost": self.uniform_cost_heuristic,
+            "manhattan": self.manhattan_heuristic,
+            "misplaced_tile": self.misplaced_tile_heuristic,
+        }
         self.state = state
         self.empty = empty
         self.solution = [["A", "N", "G"], ["E", "L", "I"], ["C", "A", self.empty]]
@@ -29,6 +35,22 @@ class Game:
         self.__check_size()
         self.__assign_empty()
         self.__num_moves = num_moves
+        self.heuristic = heuristics[heuristic]
+
+    def __eq__(self, other_game: object) -> bool:
+        if not isinstance(other_game, Game):
+            raise TypeError("Must compare 2 games")
+        return self.heuristic() == other_game.heuristic()
+
+    def __lt__(self, other_game: object) -> bool:
+        if not isinstance(other_game, Game):
+            raise TypeError("Must compare 2 games")
+        return self.heuristic() < other_game.heuristic()
+
+    def __le__(self, other_game: object) -> bool:
+        if not isinstance(other_game, Game):
+            raise TypeError("Must compare 2 games")
+        return self.heuristic() <= other_game.heuristic()
 
     def __map_solution(self) -> None:
         """Map each character in the solution to the correct coordinate."""
@@ -58,6 +80,9 @@ class Game:
         """Converts the puzzle state into a string for easy printing."""
         return "\n".join([" ".join([i for i in row]) for row in self.state])
 
+    def flatten(self) -> str:
+        return "".join("".join(tile for tile in row) for row in self.state)
+
     def move(self, direction: Move) -> Union["Game", None]:
         """Performs a move on a copy of the puzzle state, and returns that new state.
 
@@ -79,7 +104,9 @@ class Game:
             ret_state[empty[0]][empty[1]],
         )
         # empty_coord = result
-        return Game(ret_state, self.empty)
+        ret = Game(ret_state, self.empty, num_moves=self.__num_moves + 1)
+
+        return ret
 
     def is_valid(self, coord: Tuple[int, ...]) -> bool:
         """Returns true if the input is a valid coordinate in the game board.
@@ -100,6 +127,9 @@ class Game:
     def is_complete(self) -> bool:
         """Returns true if the puzzle has been solved."""
         return self.state == self.solution
+
+    def uniform_cost_heuristic(self) -> int:
+        return self.__num_moves
 
     def manhattan_heuristic(self) -> int:
         """Returns the value given by the Manhattan distance of each character to
@@ -129,7 +159,7 @@ class Game:
 
         ret += min(a_heur_1, a_heur_2)
 
-        return ret
+        return ret + self.__num_moves
 
     def misplaced_tile_heuristic(self) -> int:
         """Returns the number of characters that are not at the same coordinate as their solution counterpart."""
@@ -140,7 +170,8 @@ class Game:
             for sol_cell, state_cell in zip(sol_row, state_row):
                 ret = ret if sol_cell == state_cell else ret + 1
 
-        return ret
+        return ret + self.__num_moves
+
     def inc_moves(self) -> None:
         self.__num_moves += 1
 
