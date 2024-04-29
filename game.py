@@ -179,7 +179,7 @@ class Game:
 
         return ret + self.__num_moves
 
-    def inc_moves(self) -> None:
+    def __inc_moves(self) -> None:
         """Increases the number of moves made so far."""
         self.__num_moves += 1
 
