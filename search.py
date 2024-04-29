@@ -1,38 +1,40 @@
-from queue import PriorityQueue, Queue
+from queue import PriorityQueue
 
 from game import Game, Move
 
 
-def uniform_cost_search(start: Game) -> None:
-    search_queue = Queue()
-    search_queue.put((0, start))
+def search(start: Game) -> Game:
+    search_queue = PriorityQueue()
+    search_queue.put(start)
+    visited = set()
 
     while not search_queue.empty():
-        num_moves, curr_game = search_queue.get()
-        print(curr_game)
-        print("")
+        curr_game = search_queue.get()
+        if curr_game.flatten() in visited:
+            continue
+        else:
+            visited.add(curr_game.flatten())
         if curr_game.is_complete():
-            print(f"Took {num_moves} moves to solve!")
-            return
+            num_moves = curr_game.get_num_moves()
+            print(f"Finished in {num_moves} moves!")
+            return curr_game
         for move in Move:
-            new_game = curr_game.move(move)
-            if new_game:
-                search_queue.put((num_moves + 1, new_game))
-
-    return
-
-
-def misplaced_tile_search(start: Game) -> Game:
-    return Game()
-
-
-def manhattan_distance_search(start: Game) -> Game:
+            next_game = curr_game.move(move)
+            if next_game is None:
+                continue
+            search_queue.put(next_game)
+    print("Unsolveable!")
     return Game()
 
 
 if __name__ == "__main__":
-    game = Game()
-    game = game.move(Move.LEFT)
-    game = game.move(Move.LEFT)
-
-    uniform_cost_search(game)
+    game = Game(heuristic="manhattan")
+    # game.state[0][0], game.state[0][1] = game.state[0][1], game.state[0][0]
+    game = game.move(Move.UP)
+    if game:
+        game = game.move(Move.LEFT)
+    if game:
+        game = game.move(Move.UP)
+    if game:
+        game.reset_num_moves()
+        game = search(game)
