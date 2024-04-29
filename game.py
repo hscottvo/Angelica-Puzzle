@@ -35,6 +35,7 @@ class Game:
         self.__check_size()
         self.__assign_empty()
         self.__num_moves = num_moves
+        self.__heuristic_name = heuristic
         self.heuristic = heuristics[heuristic]
 
     def __eq__(self, other_game: object) -> bool:
@@ -104,7 +105,12 @@ class Game:
             ret_state[empty[0]][empty[1]],
         )
         # empty_coord = result
-        ret = Game(ret_state, self.empty, num_moves=self.__num_moves + 1)
+        ret = Game(
+            state=ret_state,
+            empty=self.empty,
+            num_moves=self.__num_moves + 1,
+            heuristic=self.__heuristic_name,
+        )
 
         return ret
 
