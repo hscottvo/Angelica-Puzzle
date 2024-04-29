@@ -179,6 +179,7 @@ class Game:
 
         return ret + self.__num_moves
 
+
     def get_num_moves(self) -> int:
         """Returns the number of moves made so far."""
         return self.__num_moves
