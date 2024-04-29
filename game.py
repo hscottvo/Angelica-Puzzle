@@ -135,11 +135,12 @@ class Game:
         return self.state == self.__solution
 
     def uniform_cost_heuristic(self) -> int:
+        """Returns the number of moves made so far."""
         return self.__num_moves
 
     def manhattan_heuristic(self) -> int:
         """Returns the value given by the Manhattan distance of each character to
-        its location in the solution.
+        its location in the solution, plus the number of moves made so far.
 
         In the Angelica puzzle, there is exactly one instance of duplicates. As a result, we take the Manhattan distance such that the duplicate A's go to the closest solution coordinate.
         """
@@ -168,7 +169,7 @@ class Game:
         return ret + self.__num_moves
 
     def misplaced_tile_heuristic(self) -> int:
-        """Returns the number of characters that are not at the same coordinate as their solution counterpart."""
+        """Returns the number of characters that are not at the same coordinate as their solution counterpart, plus the number of moves made so far."""
 
         ret = 0
 
@@ -179,12 +180,15 @@ class Game:
         return ret + self.__num_moves
 
     def inc_moves(self) -> None:
+        """Increases the number of moves made so far."""
         self.__num_moves += 1
 
     def get_num_moves(self) -> int:
+        """Returns the number of moves made so far."""
         return self.__num_moves
 
     def reset_num_moves(self) -> None:
+        """Resets the number of moves made so far to 0."""
         self.__num_moves = 0
 
 
