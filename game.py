@@ -17,6 +17,7 @@ class Game:
         self,
         state: List[List[str]] = default_state,
         empty: str = "\u25a1",
+        num_moves: int = 0,
     ):
         self.state = state
         self.empty = empty
@@ -27,6 +28,7 @@ class Game:
         self.width = len(state[0])
         self.__check_size()
         self.__assign_empty()
+        self.__num_moves = num_moves
 
     def __map_solution(self) -> None:
         """Map each character in the solution to the correct coordinate."""
@@ -139,6 +141,14 @@ class Game:
                 ret = ret if sol_cell == state_cell else ret + 1
 
         return ret
+    def inc_moves(self) -> None:
+        self.__num_moves += 1
+
+    def get_num_moves(self) -> int:
+        return self.__num_moves
+
+    def reset_num_moves(self) -> None:
+        self.__num_moves = 0
 
 
 if __name__ == "__main__":
