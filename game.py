@@ -27,11 +27,11 @@ class Game:
         }
         self.state = state
         self.empty = empty
-        self.solution = [["A", "N", "G"], ["E", "L", "I"], ["C", "A", self.empty]]
+        self.__solution = [["A", "N", "G"], ["E", "L", "I"], ["C", "A", self.empty]]
         self.__map_solution()
-        self.height = len(state)
-        assert self.height > 0
-        self.width = len(state[0])
+        self.__height = len(state)
+        assert self.__height > 0
+        self.__width = len(state[0])
         self.__check_size()
         self.__assign_empty()
         self.__num_moves = num_moves
@@ -55,7 +55,7 @@ class Game:
     def __map_solution(self) -> None:
         """Map each character in the solution to the correct coordinate."""
         self.solution_map = dict()
-        for row_idx, row in enumerate(self.solution):
+        for row_idx, row in enumerate(self.__solution):
             for col_idx, cell in enumerate(row):
                 # needs special attention for A since there are multiple
                 if cell == "A":
@@ -66,13 +66,13 @@ class Game:
     def __check_size(self):
         """Raises an exception if the game state is not rectangular."""
         for i in self.state:
-            if len(i) != self.width:
+            if len(i) != self.__width:
                 raise Exception("Width must be greater than 0!")
 
     def __assign_empty(self) -> None:
         """Finds the empty tile and records its coordinate."""
-        for i in range(self.height):
-            for j in range(self.width):
+        for i in range(self.__height):
+            for j in range(self.__width):
                 if self.state[i][j] == self.empty:
                     self.empty_coord = (i, j)
 
@@ -117,8 +117,8 @@ class Game:
         if (
             coord[0] < 0
             or coord[1] < 0
-            or coord[0] >= self.height
-            or coord[1] >= self.width
+            or coord[0] >= self.__height
+            or coord[1] >= self.__width
         ):
             return False
 
@@ -126,7 +126,7 @@ class Game:
 
     def is_complete(self) -> bool:
         """Returns true if the puzzle has been solved."""
-        return self.state == self.solution
+        return self.state == self.__solution
 
     def uniform_cost_heuristic(self) -> int:
         return self.__num_moves
@@ -166,7 +166,7 @@ class Game:
 
         ret = 0
 
-        for sol_row, state_row in zip(self.solution, self.state):
+        for sol_row, state_row in zip(self.__solution, self.state):
             for sol_cell, state_cell in zip(sol_row, state_row):
                 ret = ret if sol_cell == state_cell else ret + 1
 
