@@ -56,5 +56,5 @@ if __name__ == "__main__":
     if game:
         game = game.move(Move.UP)
     if game:
-        game.reset_num_moves()
+        game.reset()
         game = search(game)

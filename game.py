@@ -198,9 +198,11 @@ class Game:
         """Returns the number of moves made so far."""
         return self.__num_moves
 
-    def reset_num_moves(self) -> None:
+    def reset(self) -> None:
         """Resets the number of moves made so far to 0."""
         self.__num_moves = 0
+        self.__history = []
+
     def add_history(self, move: Move):
         self.__history.append(move.name)
 
