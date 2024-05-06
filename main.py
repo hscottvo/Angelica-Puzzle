@@ -15,7 +15,8 @@ parser.add_argument(
 
 
 def main():
-    print(parser.parse_args().verbose)
+    args = parser.parse_args()
+
     return
 
 

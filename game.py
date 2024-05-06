@@ -19,6 +19,8 @@ class Game:
         empty: str = "\u25a1",
         heuristic: str = "uniform_cost",
         num_moves: int = 0,
+        verbose: bool = True,
+        history: List[str] = [],
     ):
         heuristics = {
             "uniform_cost": self.uniform_cost_heuristic,
@@ -37,6 +39,8 @@ class Game:
         self.__num_moves = num_moves
         self.__heuristic_name = heuristic
         self.heuristic = heuristics[heuristic]
+        self.verbose = verbose
+        self.__history = history
 
     def __eq__(self, other_game: object) -> bool:
         if not isinstance(other_game, Game):
@@ -105,12 +109,23 @@ class Game:
             ret_state[empty[0]][empty[1]],
         )
         # empty_coord = result
-        ret = Game(
-            state=ret_state,
-            empty=self.empty,
-            num_moves=self.__num_moves + 1,
-            heuristic=self.__heuristic_name,
-        )
+        if self.verbose:
+            ret = Game(
+                state=ret_state,
+                empty=self.empty,
+                num_moves=self.__num_moves + 1,
+                heuristic=self.__heuristic_name,
+                history=deepcopy(self.__history),
+            )
+        else:
+            ret = Game(
+                state=ret_state,
+                empty=self.empty,
+                num_moves=self.__num_moves + 1,
+                heuristic=self.__heuristic_name,
+            )
+        if self.verbose:
+            ret.add_history(direction)
 
         return ret
 
@@ -179,7 +194,6 @@ class Game:
 
         return ret + self.__num_moves
 
-
     def get_num_moves(self) -> int:
         """Returns the number of moves made so far."""
         return self.__num_moves
@@ -187,6 +201,11 @@ class Game:
     def reset_num_moves(self) -> None:
         """Resets the number of moves made so far to 0."""
         self.__num_moves = 0
+    def add_history(self, move: Move):
+        self.__history.append(move.name)
+
+    def get_history(self):
+        return self.__history
 
 
 if __name__ == "__main__":
