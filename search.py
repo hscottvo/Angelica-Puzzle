@@ -20,9 +20,9 @@ def search(start: Game, verbose: bool = True) -> Game:
 
         if verbose:
             num_nodes += 1
-            print(
-                f"The best state to expand with g(n) = {curr_game.get_num_moves()} and h(n) = {curr_game.heuristic()} is:"
-            )
+            g = curr_game.get_num_moves()
+            h = curr_game.heuristic() - curr_game.get_num_moves()
+            print(f"The best state to expand with g(n) = {g} and h(n) = {h} is:")
             print(curr_game, end="\n\n")
 
         if curr_game.is_complete():
